@@ -1,39 +1,44 @@
 <?php
-include 'db.php';
+session_start();
+require_once "db.php";
 
-$limit = 20; // Limit the number of products displayed
+if (!isset($_SESSION["user_id"])) {
+    header("Location: login.php");
+    exit;
+}
+
+$limit = 20; 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-$sql = "SELECT productCode, productName,productLine,buyPrice,MSRP FROM products LIMIT ? OFFSET ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $limit, $offset);
+$sql = "SELECT productCode, productName, productLine, buyPrice, MSRP 
+        FROM products 
+        LIMIT :limit OFFSET :offset";
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
-$result = $stmt->get_result();
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href=style.css >
+    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Product List</title>
 </head>
 <body>
     <h2>Product List</h2>
-<div class="flex-container">
-    
-    <from method="GET" action="search.php" class="search-form">
-        <input type="text" name="query" placeholder="Search products by name or code...">
-        <button type="submit">Search</button>
-    </from>
-
-    <a href="add.php" class="btn-add">Add New Product</a>
-
-    
+    <div class="btn-add">
+        <form method="GET" action="search.php" class="search-form">
+            <input type="text" name="query" placeholder="Search products by name or code...">
+            <button type="submit">Search</button>
+        </form>
+        <a href="add.php" class="btn-add">Add New Product</a>
     </div>
-    <table border ="1" cellpadding="5" cellspacing="0">
+
+    <table border="1" cellpadding="5" cellspacing="0">
         <tr>
             <th>Product Code</th>
             <th>Product Name</th>
@@ -41,23 +46,19 @@ $result = $stmt->get_result();
             <th>Buy Price</th>
             <th>MSRP</th>
         </tr>
-        <?php if($result->num_rows > 0): ?>
-            <?php while($row = $result->fetch_assoc()): ?>
+        <?php if (!empty($rows)): ?>
+            <?php foreach ($rows as $row): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($row['productCode']); ?></td>
-                    <td><?php echo htmlspecialchars($row['productName']); ?></td>
-                    <td><?php echo htmlspecialchars($row['productLine']); ?></td>
-                    <td><?php echo htmlspecialchars($row['buyPrice']); ?></td>
-                    <td><?php echo htmlspecialchars($row['MSRP']); ?></td>
+                    <td><?= htmlspecialchars($row['productCode']) ?></td>
+                    <td><?= htmlspecialchars($row['productName']) ?></td>
+                    <td><?= htmlspecialchars($row['productLine']) ?></td>
+                    <td><?= htmlspecialchars($row['buyPrice']) ?></td>
+                    <td><?= htmlspecialchars($row['MSRP']) ?></td>
                 </tr>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         <?php else: ?>
             <tr><td colspan="5">No products found</td></tr>
         <?php endif; ?>
     </table>
-    
-    <?php $conn->close(); ?>
-
-       
 </body>
 </html>

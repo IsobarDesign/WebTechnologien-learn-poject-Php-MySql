@@ -4,11 +4,10 @@ $user = 'root';
 $password = '';
 $database = 'classicmodels';
 
-$conn =new mysqli($host, $user, $password, $database);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}   
-// echo "Connected successfully";
-?>  
-
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8", $user, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("No connection: " . $e->getMessage());
+}
+?>

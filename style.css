@@ -33,9 +33,9 @@ input[type="text"]{
 
 button{
     padding: 12px 25px;
-    background-color: #28a745;
+    background-color: #0af340;
     color: white;
-    border: none;
+    border: 1px solid #28a745;
     border-radius: 1px;
     cursor: pointer;
     transition:background-color 0.3s ease;
@@ -86,7 +86,7 @@ th:hoover{
 .btn-add {
     display: inline-block;
     padding: 12px 25px;
-    background-color: #28a745;  /* Deep green*/
+    background-color: #93b29a;  /* Deep green*/
     color: white;
     font-weight: bold;
     gap:0px;
@@ -103,6 +103,6 @@ th:hoover{
 .flex-container {
     display: flex;
     justify-content:space-around;
-    align-items: center;
+    align-items: left;
     margin-bottom: 15px;
 }
