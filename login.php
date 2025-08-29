@@ -34,9 +34,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: linear-gradient(135deg, #667eea, #764ba2);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             height: 100vh;
             margin: 0;
+            padding-top: 50px;
         }
 
         .login-box {
@@ -52,6 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .login-box h2 {
             margin-bottom: 20px;
             color: #333;
+            text-transform: uppercase;
+            matgin-bottom: 20px;
+            letter-spacing: 1px;
         }
 
         .login-box input {
@@ -84,6 +88,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-bottom: 10px;
             font-size: 14px;
         }
+        p{ color: #1d1650ff;
+        font-size: 14px;
+       }
+
     </style>
 </head>
 <body>
@@ -93,6 +101,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <input type="text" name="username" placeholder="Login" required><br><br>
         <input type="password" name="password" placeholder="Password" required><br><br>
         <button type="submit">Log In</button>
+        <p>Don't have an account? <a href="register.php">Register here</a>.</p> 
+
     </form>
 </body>
 </html>

@@ -6,6 +6,12 @@ if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
     exit;
 }
+if(isset($_GET['page']) && $_GET['page'] == 'logout') {
+    session_unset();
+    session_destroy();
+    header("Location: login.php");
+    exit;
+}
 
 $limit = 20; 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -29,6 +35,8 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Product List</title>
 </head>
 <body>
+    <h1>Welcome, <?= htmlspecialchars($_SESSION["username"]) ?>!</h1>
+    <a href="?page=logout" class="btn-logout">Logout</a>
     <h2>Product List</h2>
     <div class="btn-add">
         <form method="GET" action="search.php" class="search-form">

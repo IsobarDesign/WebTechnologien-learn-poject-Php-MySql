@@ -1,15 +1,19 @@
 <?php
-include 'db.php';
+require_once 'db.php';
+
+$result = [];
+
 if(isset($_GET['query'])){
     $search = "%".$_GET['query']."%";
-    $sql = "SELECT productCode, productName,productLine,buyPrice,MSRP FROM products WHERE productName LIKE ? OR productLine LIKE ?";
-    $smt = $conn->prepare($sql);
-    $likeSearch = "%".$search."%";
-    $smt->bind_param("ss",$search,$search);
-    $smt->execute();
-    $result = $smt->get_result();
-} else {
-    $result=[];
+
+    $sql = "SELECT productCode, productName, productLine, buyPrice, MSRP 
+            FROM products 
+            WHERE productName LIKE :search OR productLine LIKE :search2";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':search', $search, PDO::PARAM_STR);
+    $stmt->bindValue(':search2', $search, PDO::PARAM_STR);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -19,7 +23,7 @@ if(isset($_GET['query'])){
     <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Search Products</title>
 </head>
 <body>
     <h2>Search Products</h2>
@@ -34,17 +38,18 @@ if(isset($_GET['query'])){
             <th>MSRP</th>
         </tr>
         <?php if(!empty($result)): ?>
-            <?php while($row = $result->fetch_assoc()): ?>
+            <?php foreach($result as $row): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($row['productCode']); ?></td>
-                    <td><?php echo htmlspecialchars($row['productName']); ?></td>
-                    <td><?php echo htmlspecialchars($row['productLine']); ?></td>
-                    <td><?php echo htmlspecialchars($row['buyPrice']); ?></td>
-                    <td><?php echo htmlspecialchars($row['MSRP']); ?></td>
+                    <td><?= htmlspecialchars($row['productCode']) ?></td>
+                    <td><?= htmlspecialchars($row['productName']) ?></td>
+                    <td><?= htmlspecialchars($row['productLine']) ?></td>
+                    <td><?= htmlspecialchars($row['buyPrice']) ?></td>
+                    <td><?= htmlspecialchars($row['MSRP']) ?></td>
                 </tr>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         <?php else: ?>
             <tr><td colspan="5">No results found</td></tr>
         <?php endif; ?>
+    </table>
 </body>
 </html>
